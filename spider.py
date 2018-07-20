@@ -74,7 +74,7 @@ def getradom():
 def getvideopage(slug):
     r=requests.get(base_url+detailapi+"%s"%(slug),headers=headers)
     p = json.loads(r.text)
-    video=p['transcodes']
+    video=p['videos_manifest']['servers'][0]['streams']
     finurl=""
     for a in video:
         if(int(a['height'])==360):
@@ -112,7 +112,7 @@ def savetofile(textlist,path,filename):
         f.write(i+"\n")
     f.close()
 
-def gettag(tag,page):
+def gettag(tag,page,totalnum=-1):
     r = requests.get(base_url+tagapi+"%s?page=%s"%(tag,page),headers=headers)
     p = json.loads(r.text)
     videos = p['hentai_videos']
@@ -125,6 +125,12 @@ def gettag(tag,page):
     savetofile(textlist,tag,tag+str(page))
     if (page == 0):
         pagenum = p['number_of_pages']
+        n=0
+        if(totalnum==-1):
+           n=pagenum
+        else:
+           n=totalnum
+
         for i in range(1, pagenum):
             gettag(tag, i)
     print(r.text)
@@ -132,4 +138,4 @@ def gettag(tag,page):
 # tags=[]
 # tags.append("3d")
 # searchtag(tags)
-gettag("3d",0)
+gettag("ahegao",0,3)
